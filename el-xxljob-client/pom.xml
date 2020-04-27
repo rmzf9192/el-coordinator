@@ -12,7 +12,6 @@
 
     <modules>
         <module>xxl-job-client-demo</module>
-
     </modules>
 
 </project>
