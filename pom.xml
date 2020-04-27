@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.xuxueli</groupId>
-	<artifactId>xxl-job</artifactId>
+	<groupId>com.el</groupId>
+	<artifactId>el-xxl-job</artifactId>
 	<version>2.2.0</version>
 	<packaging>pom</packaging>
 
@@ -13,7 +13,8 @@
 	<modules>
 		<module>xxl-job-core</module>
 		<module>xxl-job-admin</module>
-		<!--		<module>xxl-job-executor-samples</module>-->
+		<!--<module>xxl-job-executor-samples</module>-->
+ 	    <module>xxljob-client</module>
 	</modules>
 
 	<properties>

@@ -6,14 +6,22 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="xxl-job-admin" />
+        <module name="xxl-job-client-demo" />
         <module name="xxl-job-core" />
+        <module name="xxl-job-admin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="el-xxl-job" target="1.8" />
       <module name="xxl-job-admin" target="1.8" />
+      <module name="xxl-job-client-demo" target="1.8" />
       <module name="xxl-job-core" target="1.8" />
-      <module name="xxljob-server" target="1.8" />
+      <module name="xxljob-client" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="xxljob-client" options="" />
+    </option>
   </component>
 </project>

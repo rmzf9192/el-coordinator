@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/el-xxl-job.iml" filepath="$PROJECT_DIR$/el-xxl-job.iml" />
       <module fileurl="file://$PROJECT_DIR$/xxl-job-admin/xxl-job-admin.iml" filepath="$PROJECT_DIR$/xxl-job-admin/xxl-job-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xxljob-client/xxl-job-client-demo/xxl-job-client-demo.iml" filepath="$PROJECT_DIR$/xxljob-client/xxl-job-client-demo/xxl-job-client-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/xxl-job-core/xxl-job-core.iml" filepath="$PROJECT_DIR$/xxl-job-core/xxl-job-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/xxljob-server.iml" filepath="$PROJECT_DIR$/xxljob-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xxljob-client/xxljob-client.iml" filepath="$PROJECT_DIR$/xxljob-client/xxljob-client.iml" />
     </modules>
   </component>
 </project>
