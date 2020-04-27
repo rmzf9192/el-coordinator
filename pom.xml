@@ -41,7 +41,7 @@
 		<groovy.version>3.0.3</groovy.version>
 
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 		<maven-war-plugin.version>3.2.3</maven-war-plugin.version>
 	</properties>
@@ -65,14 +65,14 @@
 		<connection>scm:git:https://github.com/xuxueli/xxl-job.git</connection>
 		<developerConnection>scm:git:git@github.com:xuxueli/xxl-job.git</developerConnection>
 	</scm>
-	<developers>
-		<developer>
-			<id>XXL</id>
-			<name>xuxueli</name>
-			<email>931591021@qq.com</email>
-			<url>https://github.com/xuxueli</url>
-		</developer>
-	</developers>
+<!--	<developers>-->
+<!--		<developer>-->
+<!--			<id>XXL</id>-->
+<!--			<name>xuxueli</name>-->
+<!--			<email>931591021@qq.com</email>-->
+<!--			<url>https://github.com/xuxueli</url>-->
+<!--		</developer>-->
+<!--	</developers>-->
 
 	<profiles>
 
@@ -141,6 +141,56 @@
 				</repository>
 			</distributionManagement>
 		</profile>
+		<!-- 启动配置-->
+			<profile>
+				<id>local</id>
+				<properties>
+					<profileActive>local</profileActive>
+				</properties>
+				<activation>
+					<activeByDefault>false</activeByDefault>
+				</activation>
+			</profile>
+			<profile>
+				<id>dev</id>
+				<properties>
+					<profileActive>dev</profileActive>
+				</properties>
+				<activation>
+					<activeByDefault>true</activeByDefault>
+				</activation>
+			</profile>
+			<profile>
+				<id>prod</id>
+				<properties>
+					<profileActive>prod</profileActive>
+				</properties>
+				<activation>
+					<activeByDefault>true</activeByDefault>
+				</activation>
+			</profile>
+
 	</profiles>
 
+
+	<repositories>
+		<!--阿里云仓库-->
+		<repository>
+			<id>aliyun</id>
+			<name>aliyun-maven</name>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+		</repository>
+		<!-- 阿里云spring仓库 -->
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://maven.aliyun.com/repository/spring</url>
+		</repository>
+		<!-- 中央仓库 -->
+		<repository>
+			<id>central</id>
+			<name>maven-central</name>
+			<url>http://central.maven.org/maven2/</url>
+		</repository>
+	</repositories>
 </project>

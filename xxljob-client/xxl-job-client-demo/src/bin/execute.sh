@@ -4,7 +4,7 @@
 #export JRE_HOME=$JAVA_HOME/jre
 
 ##此处是打包的jar包名称，不带.jar后缀
-API_NAME=xxl-job-admin-2.2.0
+API_NAME=xxl-job-client-demo-2.2.0
 JAR_NAME=$API_NAME\.jar
 #PID  代表是PID文件
 PID=$API_NAME\.pid
