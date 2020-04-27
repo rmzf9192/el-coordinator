@@ -14,7 +14,7 @@
 		<module>xxl-job-core</module>
 		<module>xxl-job-admin</module>
 		<!--<module>xxl-job-executor-samples</module>-->
- 	    <module>xxljob-client</module>
+ 	    <module>el-xxljob-client</module>
 	</modules>
 
 	<properties>
