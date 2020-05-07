@@ -5,8 +5,12 @@ import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.xxl.job.core.log.XxlJobLogger;
 import com.xxl.job.core.util.ShardingUtil;
+import com.xxl.job.executor.core.config.XxlJobReaderDatabaseConfig;
+import com.xxl.job.executor.core.config.XxlJobWriterDatabaseConfig;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedInputStream;
@@ -29,15 +33,22 @@ import java.util.concurrent.TimeUnit;
  * @author xuxueli 2019-12-11 21:52:51
  */
 @Component
+@EnableConfigurationProperties({XxlJobReaderDatabaseConfig.class,XxlJobWriterDatabaseConfig.class})
+@RequiredArgsConstructor
 public class SampleXxlJob {
     private static Logger logger = LoggerFactory.getLogger(SampleXxlJob.class);
 
+    private final XxlJobReaderDatabaseConfig xxlJobDatabaseConfig;
+
+    private final XxlJobWriterDatabaseConfig xxlJobWriterDatabaseConfig;
 
     /**
      * 1、简单任务示例（Bean模式）
      */
     @XxlJob("demoJobHandler")
     public ReturnT<String> demoJobHandler(String param) throws Exception {
+        XxlJobLogger.log(xxlJobDatabaseConfig.toString());
+        XxlJobLogger.log(xxlJobWriterDatabaseConfig.toString());
         XxlJobLogger.log("XXL-JOB, Hello World.");
 
         for (int i = 0; i < 5; i++) {
