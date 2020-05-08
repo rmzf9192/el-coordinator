@@ -1,7 +1,9 @@
-package com.xxl.job.executor.mvc.controller;
+package com.xxl.job.executor.controller;
 
 import com.xxl.job.executor.domain.DataxCallbackRecord;
 import com.xxl.job.executor.service.CallBackService;
+import com.xxl.job.executor.utils.XxlJobInvoker;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +16,19 @@ import java.util.Objects;
  *                        目前考虑，存于数据库中。需要配置专属记录的数据源（该数据源记录执行的任务，以及任务的执行情况）
  */
 @RestController
+@RequestMapping("/api")
+@Api(tags = "回调接口")
 public class ApiController {
     @Autowired
     private CallBackService callBackService;
 
-    @RequestMapping(value = "/callback")
+    @ApiOperation("回调接口-接收处理信息")
+    @RequestMapping(value = "/callback",method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "dataxId", value = "任务唯一标识",required = true),
+            @ApiImplicitParam(name = "flag", value = "处理结果",  required = true),
+            @ApiImplicitParam(name = "callbackMsg", value = "处理结果详情")
+    })
     public String callBack(@RequestParam("dataxId") String dataxId,@RequestParam("flag") Integer flag,
                            @RequestParam("callbackMsg") String callbackMsg ){
         if(!Objects.equals(dataxId,null)){
@@ -27,17 +37,19 @@ public class ApiController {
             dataxCallbackRecord.setDataxId(dataxId);
             dataxCallbackRecord.setFlag(flag);
             callBackService.insert(dataxCallbackRecord);
+            //调用回调接口完成，需要通知执行器发送指令
+           new XxlJobInvoker().action();
         }
         return "xxj-job received";
     }
 
-    @RequestMapping("/test")
+   /* @RequestMapping(value = "/test",method = RequestMethod.GET)
     public String test(){
         return "xxj-receviced";
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value = "/",method = RequestMethod.GET)
     public String test1(){
         return "xxj-receviced1";
-    }
+    }*/
 }

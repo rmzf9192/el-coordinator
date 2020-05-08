@@ -31,5 +31,9 @@ public class DataxCallbackRecord implements Serializable {
     * 记录处理失败的信息
     */
     private String callbackMsg;
+    /**
+     * 回调接口地址
+     */
+    private String callBackApi;
 
 }

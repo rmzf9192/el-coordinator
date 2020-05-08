@@ -25,7 +25,7 @@ public interface CallBackService {
      * @param dataxCallbackRecord 实例对象
      * @return 实例对象
      */
-    DataxCallbackRecord insert(DataxCallbackRecord dataxCallbackRecord);
+    boolean insert(DataxCallbackRecord dataxCallbackRecord);
 
     String update(String msg);
 

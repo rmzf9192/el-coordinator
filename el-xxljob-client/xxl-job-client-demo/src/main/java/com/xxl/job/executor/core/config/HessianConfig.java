@@ -1,7 +1,7 @@
 package com.xxl.job.executor.core.config;
 
+import com.el.trubine.rpc.common.service.DataXExecuteServiceInterface;
 import com.xxl.job.executor.service.CallBackService;
-import com.xxl.job.executor.service.rpc.DataXExecuteServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

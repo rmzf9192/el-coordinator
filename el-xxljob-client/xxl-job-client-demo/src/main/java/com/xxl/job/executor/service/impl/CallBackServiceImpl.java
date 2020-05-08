@@ -4,11 +4,11 @@ import com.xxl.job.executor.domain.DataxCallbackRecord;
 import com.xxl.job.executor.mapper.DataxCallbackRecordDao;
 import com.xxl.job.executor.service.CallBackService;
 import com.xxl.job.executor.service.Observer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Roman.Zhang
@@ -16,6 +16,7 @@ import java.util.List;
  * @description:
  */
 @Service("callBackService")
+@Slf4j
 public class CallBackServiceImpl implements CallBackService, Observer {
     @Resource
     private DataxCallbackRecordDao dataxCallbackRecordDao;
@@ -39,9 +40,9 @@ public class CallBackServiceImpl implements CallBackService, Observer {
      * @return 实例对象
      */
     @Override
-    public DataxCallbackRecord insert(DataxCallbackRecord dataxCallbackRecord) {
-        this.dataxCallbackRecordDao.insert(dataxCallbackRecord);
-        return dataxCallbackRecord;
+    public boolean insert(DataxCallbackRecord dataxCallbackRecord) {
+        int insert = this.dataxCallbackRecordDao.insert(dataxCallbackRecord);
+        return insert > 0 ? true:false;
     }
 
     @Override
