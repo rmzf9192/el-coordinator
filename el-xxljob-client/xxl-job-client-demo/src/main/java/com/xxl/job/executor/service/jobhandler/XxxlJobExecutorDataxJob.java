@@ -10,6 +10,7 @@ import com.xxl.job.executor.core.config.XxlJobReaderDatabaseConfig;
 import com.xxl.job.executor.core.config.XxlJobWriterDatabaseConfig;
 import com.xxl.job.executor.domain.DataxCallbackRecord;
 import com.xxl.job.executor.service.CallBackService;
+import com.xxl.job.executor.utils.FindFileUtils;
 import com.xxl.job.executor.utils.XxlJobCommand;
 import com.xxl.job.executor.utils.XxlJobReceived;
 import lombok.RequiredArgsConstructor;
@@ -70,18 +71,9 @@ public class XxxlJobExecutorDataxJob {
         //1.1将需要发送的数据备份到日志表中
         DataxCallbackRecord dataxCallbackRecord = new DataxCallbackRecord();
         boolean callbackRecord = callBackService.insert(dataxCallbackRecord);
-        FileChannel inChannel = FileChannel.open(Paths.get(System.getProperty("user.dir")+"\\el-xxljob-client\\xxl-job-client-demo\\src\\main\\resources\\doc\\mysql.json"), StandardOpenOption.READ);
 
-        ByteBuffer allocate = ByteBuffer.allocate(1024);
-        StringBuilder stringBuilder = new StringBuilder();
-        while(inChannel.read(allocate)!=-1){
-            allocate.flip();
-            stringBuilder.append(new String(allocate.array(),0,allocate.limit()));
-            System.out.println(new String(allocate.array(),0,allocate.limit()));
-            //清空缓冲区
-            allocate.clear();
-        }
-        XxlJobLogger.log(stringBuilder.toString());
+        String json = FindFileUtils.getJson();
+        XxlJobLogger.log(json);
         //2.设置同步属性（是datax的属性，暂时不设）
 
         //3.请求el-data-turbine,传递数据源及回调接口地址
