@@ -3,6 +3,8 @@ package com.xxl.job.executor.domain;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * (DataxCallbackRecord)实体类
@@ -16,7 +18,7 @@ public class LogRecord implements Serializable {
     
     private Integer id;
 
-    private Integer jobId;
+    private String jobId;
     /**
     * xxl-job发送的标识以及接收的标识
     */
@@ -37,5 +39,19 @@ public class LogRecord implements Serializable {
      * 回调接口地址
      */
     private String callBackApi;
+    /**
+     * 日志类型
+     */
+    private String logType;
+
+    /**
+     * 日志信息
+     */
+    private String message;
+
+    /**
+     * 日志时间
+     */
+    private LocalDateTime dateTime;
 
 }

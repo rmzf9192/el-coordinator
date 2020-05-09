@@ -52,7 +52,7 @@ public interface LogMapperDao {
      * @param dataxCallbackRecord 实例对象
      * @return 影响行数
      */
-    @Insert("INSERT INTO datax_callback_record(datax_id,flag,callback_msg,job_id) VALUES(#{dataxId}, #{flag}, #{callbackMsg},#{jobId})")
+    @Insert("INSERT INTO datax_callback_record(datax_id,flag,callback_msg,job_id,log_type,message,date_time) VALUES(#{dataxId}, #{flag}, #{callbackMsg},#{jobId},#{logType},#{message},#{dateTime})")
     int insert(LogRecord dataxCallbackRecord);
 
     @Select("SELECT callback_msg,job_id FROM datax_callback_record WHERE job_id = #{jobId}")
@@ -66,5 +66,5 @@ public interface LogMapperDao {
     List<LogRecord> findByJobId(@Param("jobId") Integer jobId);
 
     @Update("UPDATE datax_callback_record SET job_id = 0 where job_id =#{jobId} ")
-    int updateByJobId(@Param("jobId") Integer jobId);
+    int updateByJobId(@Param("jobId") String jobId);
 }

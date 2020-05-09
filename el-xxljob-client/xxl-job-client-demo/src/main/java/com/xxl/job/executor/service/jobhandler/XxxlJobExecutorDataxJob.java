@@ -21,6 +21,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,7 +52,7 @@ public class XxxlJobExecutorDataxJob {
     private DataXExecuteServiceInterface dataXExecuteServiceInterface;
 
     /**
-     *
+     * 针对场景为：任务为：阻塞处理策略，以避免过多请求
      * @param param 必须保持与任务ID一致
      * @return
      * @throws Exception
@@ -58,31 +60,26 @@ public class XxxlJobExecutorDataxJob {
     @XxlJob("dataxJobDemo")
     @Transactional
     public ReturnT<String> dataxJobDemo(String param) throws Exception {
-        //是否向datax发送数据的标识
-        boolean send = true;
-//        LogRecord logRecord1 = new LogRecord();
-        try {
-            //通过日志记录该任务是否可以调用Datax:有记录不能调用datax,没有记录才可以调用
-            List<LogRecord> byJobId = logMapperDao.findByJobId(Integer.valueOf(param));
-            if(byJobId.size()>0){
-                send =false;
-            }
+        LogRecord logRecord = new LogRecord();
+        try{
+            //根据uuid对发送到El-Data-Turbine任务做标识
+            String uuid = UUID.randomUUID().toString().replace("-", "");
 
-//            if(send){
-            LogRecord logRecord = new LogRecord();
-            logRecord.setJobId(Integer.valueOf(param));
-            int insert = logMapperDao.insert(logRecord);
+
+            logRecord.setDataxId(uuid);
+            logRecord.setJobId(param);
+            logRecord.setLogType("S");//S:成功，F:失败
+
             String hostIp = IpUtil.getIp();
             String url =System.getProperty("user.dir")+"\\el-xxljob-client\\xxl-job-client-demo\\src\\main\\resources\\doc\\mysql.json";
             String json = FindFileUtils.getJson(url);
             //1.1将需要发送的数据备份到日志表中
-            DataxResult dataxResult = new DataxResult();
             DateXExecuteParameter dateXExecuteParameter = new DateXExecuteParameter();
             dateXExecuteParameter.setCallback_url("/callBackService");
             dateXExecuteParameter.setClient_ip(hostIp+":8900");
             dateXExecuteParameter.setJobJson(json);
             dateXExecuteParameter.setJobId(23);
-            dateXExecuteParameter.setProcessId(UUID.randomUUID().toString().replace("-",""));
+            dateXExecuteParameter.setProcessId(uuid);
             dateXExecuteParameter.setClient_service_name("任务");
             dateXExecuteParameter.setClient_task_name("");
     
@@ -90,18 +87,15 @@ public class XxxlJobExecutorDataxJob {
             //调用Datax服务
             String dataxResult1 = dataXExecuteServiceInterface.sayHello("hello");
     
-            if(dataxResult1!=null){
-                logMapperDao.updateByJobId(Integer.valueOf(param));
-            }
-    
             XxlJobLogger.log("running result"+dataxResult1);
-            //3.请求el-data-turbine,传递数据源及回调接口地址
-          /*  }else{
-                XxlJobLogger.log("no send data to EL-Data-Turbine");
-            }*/
+            logRecord.setDateTime(LocalDateTime.now(ZoneId.of("+8")));
         } catch (Exception e) {
             e.printStackTrace();
+            logRecord.setLogType("F");
+            logRecord.setMessage(e.getMessage().substring(0,100));
+            return ReturnT.FAIL;
         } finally {
+            logMapperDao.insert(logRecord);
         }
 
         return ReturnT.SUCCESS;
