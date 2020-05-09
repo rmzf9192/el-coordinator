@@ -11,10 +11,12 @@ import java.io.Serializable;
  * @since 2020-05-07
  */
 @Data
-public class DataxCallbackRecord implements Serializable {
+public class LogRecord implements Serializable {
     private static final long serialVersionUID = -73901709675854514L;
     
     private Integer id;
+
+    private Integer jobId;
     /**
     * xxl-job发送的标识以及接收的标识
     */

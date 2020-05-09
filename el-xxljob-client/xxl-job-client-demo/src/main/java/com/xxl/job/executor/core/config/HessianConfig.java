@@ -21,7 +21,7 @@ public class HessianConfig {
     @Bean
     public HessianProxyFactoryBean helloClient() {
         HessianProxyFactoryBean factoryBean = new HessianProxyFactoryBean();
-        factoryBean.setServiceUrl("http://localhost:7881/dataXExecuteService");
+        factoryBean.setServiceUrl("http://127.0.0.1:7881/dataXExecuteService");
         factoryBean.setServiceInterface(DataXExecuteServiceInterface.class);
         return factoryBean;
     }
@@ -34,5 +34,6 @@ public class HessianConfig {
         exporter.setServiceInterface(CallBackService.class);
         return exporter;
     }
+
 
 }

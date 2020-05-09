@@ -1,8 +1,7 @@
 package com.xxl.job.executor.controller;
 
-import com.xxl.job.executor.domain.DataxCallbackRecord;
+import com.xxl.job.executor.domain.LogRecord;
 import com.xxl.job.executor.service.CallBackService;
-import com.xxl.job.executor.utils.XxlJobInvoker;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +31,11 @@ public class ApiController {
     public String callBack(@RequestParam("dataxId") String dataxId,@RequestParam("flag") Integer flag,
                            @RequestParam("callbackMsg") String callbackMsg ){
         if(!Objects.equals(dataxId,null)){
-            DataxCallbackRecord dataxCallbackRecord = new DataxCallbackRecord();
+            LogRecord dataxCallbackRecord = new LogRecord();
             dataxCallbackRecord.setCallbackMsg(callbackMsg);
             dataxCallbackRecord.setDataxId(dataxId);
             dataxCallbackRecord.setFlag(flag);
-            callBackService.insert(dataxCallbackRecord);
-            //调用回调接口完成，需要通知执行器发送指令
-           new XxlJobInvoker().action();
+//            callBackService.insert(dataxCallbackRecord);
         }
         return "xxj-job received";
     }

@@ -14,10 +14,10 @@ import java.nio.file.StandardOpenOption;
  */
 
 public class FindFileUtils {
-    public static String getJson(){
+    public static String getJson(String url){
         StringBuilder stringBuilder = new StringBuilder();
         try(
-                FileChannel inChannel = FileChannel.open(Paths.get(System.getProperty("user.dir")+"\\el-xxljob-client\\xxl-job-client-demo\\src\\main\\resources\\doc\\mysql.json"), StandardOpenOption.READ);
+                FileChannel inChannel = FileChannel.open(Paths.get(url), StandardOpenOption.READ);
                 ){
             ByteBuffer allocate = ByteBuffer.allocate(1024);
 

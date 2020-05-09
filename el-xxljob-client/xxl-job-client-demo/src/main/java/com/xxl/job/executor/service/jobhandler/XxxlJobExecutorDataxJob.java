@@ -1,5 +1,6 @@
 package com.xxl.job.executor.service.jobhandler;
 
+import com.el.trubine.rpc.common.bean.DataxResult;
 import com.el.trubine.rpc.common.bean.DateXExecuteParameter;
 import com.el.trubine.rpc.common.service.DataXExecuteServiceInterface;
 import com.xxl.job.core.biz.model.ReturnT;
@@ -8,30 +9,21 @@ import com.xxl.job.core.log.XxlJobLogger;
 import com.xxl.job.core.util.IpUtil;
 import com.xxl.job.executor.core.config.XxlJobReaderDatabaseConfig;
 import com.xxl.job.executor.core.config.XxlJobWriterDatabaseConfig;
-import com.xxl.job.executor.domain.DataxCallbackRecord;
-import com.xxl.job.executor.service.CallBackService;
+import com.xxl.job.executor.domain.LogRecord;
+import com.xxl.job.executor.mapper.LogMapperDao;
 import com.xxl.job.executor.utils.FindFileUtils;
-import com.xxl.job.executor.utils.XxlJobCommand;
-import com.xxl.job.executor.utils.XxlJobReceived;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.UUID;
+
 
 /**
  * @author Roman.Zhang
@@ -44,45 +36,74 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class XxxlJobExecutorDataxJob {
     private static Logger logger = LoggerFactory.getLogger(XxxlJobExecutorDataxJob.class);
+    public static final long PRE_READ_MS = 5000;    // pre read
     //读数据源信息
     private final XxlJobReaderDatabaseConfig xxlJobDatabaseConfig;
     //写数据源信息
     private final XxlJobWriterDatabaseConfig xxlJobWriterDatabaseConfig;
 
     @Autowired
-    private CallBackService callBackService;
-
+    private LogMapperDao logMapperDao;
+//    @Autowired
+//    private XxlJobInfoDao xxlJobInfoDao;
     @Autowired
-    private DataXExecuteServiceInterface dataXExecute;
+    private DataXExecuteServiceInterface dataXExecuteServiceInterface;
 
+    /**
+     *
+     * @param param 必须保持与任务ID一致
+     * @return
+     * @throws Exception
+     */
     @XxlJob("dataxJobDemo")
+    @Transactional
     public ReturnT<String> dataxJobDemo(String param) throws Exception {
+        //是否向datax发送数据的标识
+        boolean send = true;
+//        LogRecord logRecord1 = new LogRecord();
+        try {
+            //通过日志记录该任务是否可以调用Datax:有记录不能调用datax,没有记录才可以调用
+            List<LogRecord> byJobId = logMapperDao.findByJobId(Integer.valueOf(param));
+            if(byJobId.size()>0){
+                send =false;
+            }
 
-        //规划：全局异常捕获，并记录到异常表中
-        //首先：判断是否需要发送执行指令（暂不判断）
-        //1.获取数据源信息
-        XxlJobLogger.log(XxlJobCommand.flag+"");
-        XxlJobLogger.log(xxlJobDatabaseConfig.toString());
-        XxlJobLogger.log(xxlJobWriterDatabaseConfig.toString());
-//        XxlJobLogger.log("XXL-JOB, Hello World."+param);
-        //获取服务器ip,执行器id
-        String hostIp = IpUtil.getIp();
-        XxlJobLogger.log(hostIp);
-        //1.1将需要发送的数据备份到日志表中
-        DataxCallbackRecord dataxCallbackRecord = new DataxCallbackRecord();
-        boolean callbackRecord = callBackService.insert(dataxCallbackRecord);
+//            if(send){
+            LogRecord logRecord = new LogRecord();
+            logRecord.setJobId(Integer.valueOf(param));
+            int insert = logMapperDao.insert(logRecord);
+            String hostIp = IpUtil.getIp();
+            String url =System.getProperty("user.dir")+"\\el-xxljob-client\\xxl-job-client-demo\\src\\main\\resources\\doc\\mysql.json";
+            String json = FindFileUtils.getJson(url);
+            //1.1将需要发送的数据备份到日志表中
+            DataxResult dataxResult = new DataxResult();
+            DateXExecuteParameter dateXExecuteParameter = new DateXExecuteParameter();
+            dateXExecuteParameter.setCallback_url("/callBackService");
+            dateXExecuteParameter.setClient_ip(hostIp+":8900");
+            dateXExecuteParameter.setJobJson(json);
+            dateXExecuteParameter.setJobId(23);
+            dateXExecuteParameter.setProcessId(UUID.randomUUID().toString().replace("-",""));
+            dateXExecuteParameter.setClient_service_name("任务");
+            dateXExecuteParameter.setClient_task_name("");
+    
+            XxlJobLogger.log(json);
+            //调用Datax服务
+            String dataxResult1 = dataXExecuteServiceInterface.sayHello("hello");
+    
+            if(dataxResult1!=null){
+                logMapperDao.updateByJobId(Integer.valueOf(param));
+            }
+    
+            XxlJobLogger.log("running result"+dataxResult1);
+            //3.请求el-data-turbine,传递数据源及回调接口地址
+          /*  }else{
+                XxlJobLogger.log("no send data to EL-Data-Turbine");
+            }*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        }
 
-        String json = FindFileUtils.getJson();
-        XxlJobLogger.log(json);
-        //2.设置同步属性（是datax的属性，暂时不设）
-
-        //3.请求el-data-turbine,传递数据源及回调接口地址
-//        TimeUnit.SECONDS.sleep(5000);
-        var dateXExecuteParameter = new DateXExecuteParameter();
-//        dataXExecute.dataXExecute(dateXExecuteParameter);
-        //4.监测回调接口是否被调用
-        XxlJobLogger.log(new XxlJobReceived().getReceived()+"");
-        XxlJobCommand.flag = false;
         return ReturnT.SUCCESS;
     }
 }

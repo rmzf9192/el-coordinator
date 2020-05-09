@@ -1,0 +1,63 @@
+{
+    "job": {
+        "setting": {
+            "speed": {
+                 "channel": 3
+            },
+            "errorLimit": {
+                "record": 0,
+                "percentage": 0.02
+            }
+        },
+        "content": [
+            {
+                "reader": {
+                    "name": "mysqlreader",
+                    "parameter": {
+                         "username": "cms",
+                        "password": "123456",
+                        "column": [
+                            "*"
+                        ],
+                        "splitPk": "id",
+                        "connection": [
+                            {
+                                "table": [
+                                    "oat_user"
+                                ],
+                                "jdbcUrl": [
+									"jdbc:mysql://db.elitescloud.com:25005/nsp2?zeroDateTimeBehavior=CONVERT_TO_NULL"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                   "writer": {
+                    "name": "mysqlwriter",
+                    "parameter": {
+                        "writeMode": "insert",
+                        "username": "root",
+                        "password": "123456",
+                        "column": [
+                            "*"
+                        ],
+                        "session": [
+                        	"set session sql_mode='ANSI'"
+                        ],
+                        "preSql": [
+                            "delete from oat_user_bak"
+                        ],
+                        "connection": [
+                            {
+                                "jdbcUrl": "jdbc:mysql://192.168.1.130:3306/hffos",
+                                "table": [
+                                    "oat_user_bak"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}
