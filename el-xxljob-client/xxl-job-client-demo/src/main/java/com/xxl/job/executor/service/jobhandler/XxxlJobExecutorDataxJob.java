@@ -88,13 +88,13 @@ public class XxxlJobExecutorDataxJob {
             String dataxResult1 = dataXExecuteServiceInterface.sayHello("hello");
     
             XxlJobLogger.log("running result"+dataxResult1);
-            logRecord.setDateTime(LocalDateTime.now(ZoneId.of("+8")));
+
         } catch (Exception e) {
             e.printStackTrace();
             logRecord.setLogType("F");
-            logRecord.setMessage(e.getMessage().substring(0,100));
             return ReturnT.FAIL;
         } finally {
+            logRecord.setDateTime(LocalDateTime.now(ZoneId.of("+8")));
             logMapperDao.insert(logRecord);
         }
 
