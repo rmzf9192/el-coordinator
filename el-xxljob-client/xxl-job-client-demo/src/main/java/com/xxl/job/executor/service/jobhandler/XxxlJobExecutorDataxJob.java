@@ -7,11 +7,13 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.xxl.job.core.log.XxlJobLogger;
 import com.xxl.job.core.util.IpUtil;
+import com.xxl.job.executor.core.config.ReadPathJsonFileConfig;
 import com.xxl.job.executor.core.config.XxlJobReaderDatabaseConfig;
 import com.xxl.job.executor.core.config.XxlJobWriterDatabaseConfig;
 import com.xxl.job.executor.domain.LogRecord;
 import com.xxl.job.executor.mapper.LogMapperDao;
 import com.xxl.job.executor.utils.FindFileUtils;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -44,6 +46,8 @@ public class XxxlJobExecutorDataxJob {
     //写数据源信息
     private final XxlJobWriterDatabaseConfig xxlJobWriterDatabaseConfig;
 
+    private final ReadPathJsonFileConfig readPathJsonFileConfig;
+
     @Autowired
     private LogMapperDao logMapperDao;
 //    @Autowired
@@ -71,8 +75,8 @@ public class XxxlJobExecutorDataxJob {
             logRecord.setLogType("S");//S:成功，F:失败
 
             String hostIp = IpUtil.getIp();
-            String url =System.getProperty("user.dir")+"\\el-xxljob-client\\xxl-job-client-demo\\src\\main\\resources\\doc\\mysql.json";
-            String json = FindFileUtils.getJson(url);
+//            String url =System.getProperty("user.dir")+"\\el-xxljob-client\\xxl-job-client-demo\\src\\main\\resources\\doc\\mysql.json";
+            String json = FindFileUtils.getJson(readPathJsonFileConfig.getPath()+"\\dataxJobDemo\\");
             //1.1将需要发送的数据备份到日志表中
             DateXExecuteParameter dateXExecuteParameter = new DateXExecuteParameter();
             dateXExecuteParameter.setCallback_url("/callBackService");
@@ -92,11 +96,19 @@ public class XxxlJobExecutorDataxJob {
         } catch (Exception e) {
             e.printStackTrace();
             logRecord.setLogType("F");
+            logRecord.setMessage(e.getMessage().substring(0,100));
             return ReturnT.FAIL;
         } finally {
             logRecord.setDateTime(LocalDateTime.now(ZoneId.of("+8")));
             logMapperDao.insert(logRecord);
         }
+
+        return ReturnT.SUCCESS;
+    }
+
+    @XxlJob("dataxPageJson")
+    public ReturnT<String> dataxPageJson(String param){
+        XxlJobLogger.log("param:"+param);
 
         return ReturnT.SUCCESS;
     }

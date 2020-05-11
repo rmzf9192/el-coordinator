@@ -28,7 +28,19 @@
  --resources 配置文件
  ##开发规范
    参考阿里巴巴开发手册
-       
+   
+##引入外部jar包
+ 1.安装maven并配置其环境变量
+ 2.mvn -v 查看配置是否成功
+ 3.执行命令：
+   mvn install:install-file -Dfile=rpccommon-0.0.1-SNAPSHOT.jar  
+   -DgroupId=com.el.turbine -DartifactId=rpccommon -Dversion=1.0.0 -Dpackaging=jar
+ 4.执行命令说明
+   -Dfile=引入jar包名称
+   -DgroupId=pom文件中的groupId名称
+   -DartifactId=pom文件中的artifactId
+   -Dversion=pom 中的版本号
+   -Dpackaging=jar或war，包的后缀名
      
      
  
