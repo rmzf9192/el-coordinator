@@ -31,7 +31,7 @@
    
 ##引入外部jar包
  1.安装maven并配置其环境变量
- 2.mvn -v 查看配置是否成功
+ 2.mvn -v 查看配置是否成功 
  3.执行命令：
    mvn install:install-file -Dfile=rpccommon-0.0.1-SNAPSHOT.jar  
    -DgroupId=com.el.turbine -DartifactId=rpccommon -Dversion=1.0.0 -Dpackaging=jar
